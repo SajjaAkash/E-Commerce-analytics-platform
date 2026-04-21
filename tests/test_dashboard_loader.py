@@ -27,3 +27,4 @@ def test_load_dashboard_payload_reads_demo_output(tmp_path) -> None:
     assert payload is not None
     assert payload["orders"]
     assert payload["attribution_summary"]
+    assert payload["governance"]["metric_contracts"]

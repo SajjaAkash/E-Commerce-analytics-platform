@@ -20,6 +20,11 @@ from ecommerce_analytics_platform.jobs.stage_transform import (
     stage_products,
     stage_sessions,
 )
+from ecommerce_analytics_platform.metric_governance import (
+    build_backfill_plan,
+    build_finance_marketing_reconciliation,
+    build_metric_contracts,
+)
 
 
 def _sample_dir(base_dir: str | Path | None = None) -> Path:
@@ -57,6 +62,11 @@ def run_demo_pipeline(base_dir: str | Path | None = None) -> dict[str, object]:
     ]
     attribution_summary = build_attribution_summary(fact_orders)
     customer_retention = build_customer_retention(fact_orders, staged_customers)
+    metric_contracts = build_metric_contracts()
+    finance_marketing_reconciliation = build_finance_marketing_reconciliation(
+        kpi_metrics, attribution_summary
+    )
+    backfill_plan = build_backfill_plan("2026-04-18", "2026-04-20")
     quality_results = [
         asdict(result)
         for result in run_quality_suite(
@@ -77,6 +87,15 @@ def run_demo_pipeline(base_dir: str | Path | None = None) -> dict[str, object]:
     write_json_file(output_dir / "mart" / "kpi_daily_overview.json", kpi_metrics)
     write_json_file(output_dir / "mart" / "attribution_summary.json", attribution_summary)
     write_json_file(output_dir / "mart" / "customer_retention.json", customer_retention)
+    write_json_file(
+        output_dir / "governance" / "metric_contracts.json",
+        metric_contracts,
+    )
+    write_json_file(
+        output_dir / "governance" / "finance_marketing_reconciliation.json",
+        finance_marketing_reconciliation,
+    )
+    write_json_file(output_dir / "governance" / "backfill_plan.json", backfill_plan)
     write_json_file(output_dir / "quality" / "quality_results.json", quality_results)
 
     return {
@@ -90,6 +109,9 @@ def run_demo_pipeline(base_dir: str | Path | None = None) -> dict[str, object]:
         "kpi_metrics": kpi_metrics,
         "attribution_summary": attribution_summary,
         "customer_retention": customer_retention,
+        "metric_contracts": metric_contracts,
+        "finance_marketing_reconciliation": finance_marketing_reconciliation,
+        "backfill_plan": backfill_plan,
         "quality_results": quality_results,
         "output_dir": str(output_dir),
     }

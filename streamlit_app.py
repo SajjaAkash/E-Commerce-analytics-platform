@@ -100,6 +100,19 @@ SAMPLE_RETENTION = [
     },
 ]
 
+SAMPLE_GOVERNANCE = {
+    "metric_contracts": [
+        {"metric_name": "realized_revenue", "owner": "finance_analytics", "release_tier": "gold"}
+    ],
+    "finance_marketing_reconciliation": {
+        "finance_revenue": 276.0,
+        "marketing_revenue": 236.0,
+        "variance": 40.0,
+        "variance_status": "investigate",
+    },
+    "backfill_plan": [{"batch_id": 1, "window_start": "2026-04-18", "window_end": "2026-04-20"}],
+}
+
 
 def main() -> None:
     st.set_page_config(page_title="Revenue Signal Studio", layout="wide")
@@ -111,6 +124,7 @@ def main() -> None:
             SAMPLE_QUALITY,
             SAMPLE_ATTRIBUTION,
             SAMPLE_RETENTION,
+            SAMPLE_GOVERNANCE,
         )
         st.info(
             "Showing bundled sample data. "
@@ -179,6 +193,11 @@ def main() -> None:
     metric_col2.metric("Orders", len(filtered_orders))
     metric_col3.metric("Refund Rate", f"{metrics['refund_rate'] * 100:.1f}%")
     metric_col4.metric("Top Channel", metrics["top_channel"])
+    if metrics["variance_status"] != "aligned":
+        st.warning(
+            "Finance and marketing views are not fully aligned for the current batch. "
+            "Review reconciliation before publication."
+        )
 
     spotlight, controls = st.columns([1.35, 1])
     with spotlight:
@@ -196,8 +215,8 @@ def main() -> None:
         st.dataframe(payload["cohort_summary"], use_container_width=True, hide_index=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    detail_tab, retention_tab, quality_tab = st.tabs(
-        ["Order Ledger", "Retention Detail", "Quality Guardrails"]
+    detail_tab, retention_tab, quality_tab, governance_tab = st.tabs(
+        ["Order Ledger", "Retention Detail", "Quality Guardrails", "Metric Governance"]
     )
     with detail_tab:
         st.dataframe(filtered_orders, use_container_width=True)
@@ -205,6 +224,13 @@ def main() -> None:
         st.dataframe(payload["customer_retention"], use_container_width=True)
     with quality_tab:
         st.dataframe(payload["quality_results"], use_container_width=True)
+    with governance_tab:
+        st.subheader("Metric Contracts")
+        st.dataframe(payload["governance"]["metric_contracts"], use_container_width=True)
+        st.subheader("Finance vs Marketing Reconciliation")
+        st.json(payload["governance"]["finance_marketing_reconciliation"])
+        st.subheader("Backfill Plan")
+        st.dataframe(payload["governance"]["backfill_plan"], use_container_width=True)
 
 
 if __name__ == "__main__":

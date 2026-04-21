@@ -12,6 +12,7 @@ def build_dashboard_payload(
     quality_results: list[dict[str, object]],
     attribution_summary: list[dict[str, object]] | None = None,
     customer_retention: list[dict[str, object]] | None = None,
+    governance_payload: dict[str, object] | None = None,
 ) -> dict[str, object]:
     latest_kpi = kpi_metrics[-1] if kpi_metrics else {}
     revenue_by_category: dict[str, float] = {}
@@ -50,6 +51,7 @@ def build_dashboard_payload(
         )
         current["customers"] += 1
         current["retained"] += 1 if bool(row.get("retained_customer")) else 0
+    governance_payload = governance_payload or {}
 
     return {
         "headline_metrics": {
@@ -60,6 +62,9 @@ def build_dashboard_payload(
             "retained_customers": retained_customers,
             "refund_rate": refund_rate,
             "top_channel": top_channel,
+            "variance_status": governance_payload.get("finance_marketing_reconciliation", {}).get(
+                "variance_status", "unknown"
+            ),
         },
         "revenue_by_category": revenue_by_category,
         "kpi_timeseries": kpi_metrics,
@@ -68,6 +73,7 @@ def build_dashboard_payload(
         "cohort_summary": list(cohort_summary.values()),
         "orders": fact_orders,
         "quality_results": quality_results,
+        "governance": governance_payload,
     }
 
 
@@ -78,6 +84,9 @@ def load_dashboard_payload(base_dir: str | Path | None = None) -> dict[str, obje
     attribution_path = root / "mart" / "attribution_summary.json"
     retention_path = root / "mart" / "customer_retention.json"
     quality_path = root / "quality" / "quality_results.json"
+    contracts_path = root / "governance" / "metric_contracts.json"
+    finance_marketing_path = root / "governance" / "finance_marketing_reconciliation.json"
+    backfill_path = root / "governance" / "backfill_plan.json"
     if not mart_path.exists() or not kpi_path.exists() or not quality_path.exists():
         return None
     return build_dashboard_payload(
@@ -86,4 +95,13 @@ def load_dashboard_payload(base_dir: str | Path | None = None) -> dict[str, obje
         read_json_file(quality_path),
         read_json_file(attribution_path) if attribution_path.exists() else [],
         read_json_file(retention_path) if retention_path.exists() else [],
+        {
+            "metric_contracts": read_json_file(contracts_path) if contracts_path.exists() else [],
+            "finance_marketing_reconciliation": (
+                read_json_file(finance_marketing_path)
+                if finance_marketing_path.exists()
+                else {}
+            ),
+            "backfill_plan": read_json_file(backfill_path) if backfill_path.exists() else [],
+        },
     )

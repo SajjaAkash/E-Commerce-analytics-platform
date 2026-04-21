@@ -10,6 +10,7 @@ repo, not a generic dashboard demo.
 - Session-aware attribution outputs that reduce one-off spreadsheet logic from downstream teams.
 - Cohort and retention views that belong in curated analytics models, not ad hoc notebooks.
 - Incremental warehouse patterns and snapshots that mirror how BigQuery/dbt projects evolve in production.
+- Finance-versus-marketing reconciliation and metric contracts that make publication decisions explicit.
 - A small UI layer that showcases warehouse outputs rather than hiding weak modeling behind charts.
 
 ## Analytics Engineering Focus
@@ -48,6 +49,7 @@ flowchart LR
 - It distinguishes booked order value from realized revenue after refunds.
 - It treats attribution and retention as curated modeling problems instead of dashboard calculations.
 - It adds snapshot and incremental warehouse patterns because those are common ownership concerns in dbt projects.
+- It includes metric contracts, reconciliation artifacts, and bounded backfill planning instead of pretending one metric definition works for every consumer.
 - It uses the UI as a thin consumption layer on top of stronger curated models.
 
 ## Repository Layout
@@ -69,7 +71,7 @@ flowchart LR
 | GCP | BigQuery datasets, Cloud Storage, service accounts, Cloud Scheduler, and Cloud Run in Terraform |
 | BigQuery | Raw-to-analytics dataset design, incremental marts, and job payload generation for scheduled refreshes |
 | dbt | Staging, marts, snapshots, and metric-centric SQL models for attribution and retention |
-| Analytics Engineering | Revenue governance, refund handling, attribution outputs, and cohort reporting |
+| Analytics Engineering | Revenue governance, refund handling, attribution outputs, cohort reporting, and backfill-safe metric publication |
 | Streamlit | Thin business-facing layer on top of curated KPI, attribution, and retention outputs |
 
 ## Quick Start
@@ -120,6 +122,7 @@ This writes generated outputs under `data/demo_output/`:
 - `stage/customers.json`, `stage/products.json`, `stage/orders.json`, `stage/sessions.json`
 - `mart/dim_customer.json`, `mart/dim_product.json`, `mart/fact_orders.json`, `mart/kpi_daily_overview.json`
 - `mart/attribution_summary.json`, `mart/customer_retention.json`
+- `governance/metric_contracts.json`, `governance/finance_marketing_reconciliation.json`, `governance/backfill_plan.json`
 - `quality/quality_results.json`
 
 The Streamlit studio automatically reads those files when present.

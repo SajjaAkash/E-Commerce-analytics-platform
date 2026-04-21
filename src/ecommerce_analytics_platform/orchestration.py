@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ecommerce_analytics_platform.config import settings
+from ecommerce_analytics_platform.metric_governance import build_backfill_plan
 
 
 def build_bigquery_refresh_job(
@@ -56,3 +57,12 @@ def build_dbt_command(select: str = "tag:daily", full_refresh: bool = False) -> 
     if full_refresh:
         command.append("--full-refresh")
     return command
+
+
+def build_backfill_command(window_start: str, window_end: str) -> dict[str, object]:
+    return {
+        "window_start": window_start,
+        "window_end": window_end,
+        "batches": build_backfill_plan(window_start, window_end),
+        "command": build_dbt_command(select="tag:daily", full_refresh=False),
+    }
