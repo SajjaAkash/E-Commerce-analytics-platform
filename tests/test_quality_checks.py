@@ -5,7 +5,15 @@ def test_run_quality_suite_passes_for_valid_records() -> None:
     results = run_quality_suite(
         customers=[{"customer_id": "C1"}],
         products=[{"list_price": 5.0}],
-        orders=[{"order_id": "O1", "customer_id": "C1"}],
+        orders=[
+            {
+                "order_id": "O1",
+                "customer_id": "C1",
+                "refund_amount": 1.0,
+                "net_revenue": 5.0,
+                "order_status": "completed",
+            }
+        ],
         sessions=[{"event_date": "2026-01-01"}],
     )
     assert all(result.passed for result in results)

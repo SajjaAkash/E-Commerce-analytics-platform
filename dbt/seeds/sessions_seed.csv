@@ -1,5 +1,5 @@
-session_id,customer_id,event_date,channel,device_type,pageviews,converted
-S1001,C101,2026-04-18,paid_search,mobile,8,true
-S1002,C102,2026-04-18,email,desktop,5,true
-S1003,C103,2026-04-18,organic_search,mobile,7,false
-S1004,C103,2026-04-19,organic_search,tablet,6,true
+session_id,customer_id,event_date,session_started_at,channel,campaign_name,device_type,pageviews,converted
+S1001,C101,2026-04-18,2026-04-18T09:15:00,paid_search,brand_search,mobile,8,true
+S1002,C102,2026-04-18,2026-04-18T11:05:00,email,spring_launch,desktop,5,true
+S1003,C103,2026-04-18,2026-04-18T08:40:00,organic_search,seo_content,mobile,7,false
+S1004,C103,2026-04-19,2026-04-19T10:10:00,organic_search,seo_content,tablet,6,true

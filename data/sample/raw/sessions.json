@@ -3,7 +3,9 @@
     "session_id": "S1001",
     "customer_id": "C101",
     "event_date": "2026-04-18",
+    "session_started_at": "2026-04-18T09:15:00",
     "channel": "paid_search",
+    "campaign_name": "brand_search",
     "device_type": "mobile",
     "pageviews": 8,
     "converted": true
@@ -12,7 +14,9 @@
     "session_id": "S1002",
     "customer_id": "C102",
     "event_date": "2026-04-18",
+    "session_started_at": "2026-04-18T11:05:00",
     "channel": "email",
+    "campaign_name": "spring_launch",
     "device_type": "desktop",
     "pageviews": 5,
     "converted": true
@@ -21,7 +25,9 @@
     "session_id": "S1003",
     "customer_id": "C103",
     "event_date": "2026-04-18",
+    "session_started_at": "2026-04-18T08:40:00",
     "channel": "organic_search",
+    "campaign_name": "seo_content",
     "device_type": "mobile",
     "pageviews": 7,
     "converted": false
@@ -30,7 +36,9 @@
     "session_id": "S1004",
     "customer_id": "C103",
     "event_date": "2026-04-19",
+    "session_started_at": "2026-04-19T10:10:00",
     "channel": "organic_search",
+    "campaign_name": "seo_content",
     "device_type": "tablet",
     "pageviews": 6,
     "converted": true

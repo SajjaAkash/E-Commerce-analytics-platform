@@ -10,6 +10,8 @@ def build_dashboard_payload(
     fact_orders: list[dict[str, object]],
     kpi_metrics: list[dict[str, object]],
     quality_results: list[dict[str, object]],
+    attribution_summary: list[dict[str, object]] | None = None,
+    customer_retention: list[dict[str, object]] | None = None,
 ) -> dict[str, object]:
     latest_kpi = kpi_metrics[-1] if kpi_metrics else {}
     revenue_by_category: dict[str, float] = {}
@@ -19,15 +21,24 @@ def build_dashboard_payload(
             order["net_revenue"]
         )
 
+    attribution_summary = attribution_summary or []
+    customer_retention = customer_retention or []
+    retained_customers = sum(
+        1 for row in customer_retention if bool(row.get("retained_customer"))
+    )
+
     return {
         "headline_metrics": {
             "net_revenue": float(latest_kpi.get("net_revenue", 0.0)),
             "orders": int(latest_kpi.get("orders", len(fact_orders))),
             "average_order_value": float(latest_kpi.get("average_order_value", 0.0)),
             "conversion_rate": float(latest_kpi.get("conversion_rate", 0.0)),
+            "retained_customers": retained_customers,
         },
         "revenue_by_category": revenue_by_category,
         "kpi_timeseries": kpi_metrics,
+        "attribution_summary": attribution_summary,
+        "customer_retention": customer_retention,
         "orders": fact_orders,
         "quality_results": quality_results,
     }
@@ -37,6 +48,8 @@ def load_dashboard_payload(base_dir: str | Path | None = None) -> dict[str, obje
     root = Path(base_dir or settings.platform.local_data_dir) / "demo_output"
     mart_path = root / "mart" / "fact_orders.json"
     kpi_path = root / "mart" / "kpi_daily_overview.json"
+    attribution_path = root / "mart" / "attribution_summary.json"
+    retention_path = root / "mart" / "customer_retention.json"
     quality_path = root / "quality" / "quality_results.json"
     if not mart_path.exists() or not kpi_path.exists() or not quality_path.exists():
         return None
@@ -44,4 +57,6 @@ def load_dashboard_payload(base_dir: str | Path | None = None) -> dict[str, obje
         read_json_file(mart_path),
         read_json_file(kpi_path),
         read_json_file(quality_path),
+        read_json_file(attribution_path) if attribution_path.exists() else [],
+        read_json_file(retention_path) if retention_path.exists() else [],
     )

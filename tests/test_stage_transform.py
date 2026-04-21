@@ -34,8 +34,10 @@ def test_stage_orders_calculates_revenue() -> None:
                 "units": 2,
                 "unit_price": 10,
                 "discount_amount": 3,
+                "refund_amount": 2,
             }
         ]
     )
     assert staged[0]["gross_revenue"] == 20.0
     assert staged[0]["net_revenue"] == 17.0
+    assert staged[0]["realized_revenue"] == 15.0

@@ -1,4 +1,4 @@
-order_id,order_date,customer_id,product_id,session_id,channel,units,unit_price,discount_amount
-O1001,2026-04-18,C101,P100,S1001,paid_search,1,128.00,12.00
-O1002,2026-04-18,C102,P102,S1002,email,2,90.00,20.00
-O1003,2026-04-19,C103,P101,S1004,organic_search,1,74.00,0.00
+order_id,order_date,customer_id,product_id,session_id,channel,units,unit_price,order_status,discount_amount,refund_amount
+O1001,2026-04-18,C101,P100,S1001,paid_search,1,128.00,completed,12.00,0.00
+O1002,2026-04-18,C102,P102,S1002,email,2,90.00,refunded,20.00,40.00
+O1003,2026-04-19,C103,P101,S1004,organic_search,1,74.00,completed,0.00,0.00

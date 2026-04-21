@@ -41,8 +41,10 @@ def stage_orders(orders: Iterable[dict[str, object]]) -> list[dict[str, object]]
         units = int(order["units"])
         unit_price = float(order["unit_price"])
         discount_amount = float(order.get("discount_amount", 0.0))
+        refund_amount = float(order.get("refund_amount", 0.0))
         gross_revenue = round(units * unit_price, 2)
         net_revenue = round(gross_revenue - discount_amount, 2)
+        realized_revenue = round(net_revenue - refund_amount, 2)
         staged.append(
             {
                 "order_id": order["order_id"],
@@ -53,9 +55,12 @@ def stage_orders(orders: Iterable[dict[str, object]]) -> list[dict[str, object]]
                 "channel": order["channel"],
                 "units": units,
                 "unit_price": unit_price,
+                "order_status": order.get("order_status", "completed"),
                 "gross_revenue": gross_revenue,
                 "discount_amount": discount_amount,
+                "refund_amount": refund_amount,
                 "net_revenue": net_revenue,
+                "realized_revenue": realized_revenue,
             }
         )
     return staged
@@ -67,7 +72,11 @@ def stage_sessions(sessions: Iterable[dict[str, object]]) -> list[dict[str, obje
             "session_id": session["session_id"],
             "customer_id": session["customer_id"],
             "event_date": session["event_date"],
+            "session_started_at": session.get(
+                "session_started_at", f"{session['event_date']}T00:00:00"
+            ),
             "channel": session["channel"],
+            "campaign_name": session.get("campaign_name", "always_on"),
             "device_type": session["device_type"],
             "pageviews": int(session["pageviews"]),
             "converted": bool(session["converted"]),
