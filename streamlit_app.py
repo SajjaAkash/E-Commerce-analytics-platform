@@ -102,7 +102,7 @@ SAMPLE_RETENTION = [
 
 
 def main() -> None:
-    st.set_page_config(page_title="E-Commerce Analytics Platform", layout="wide")
+    st.set_page_config(page_title="Revenue Signal Studio", layout="wide")
     payload = load_dashboard_payload()
     if payload is None:
         payload = build_dashboard_payload(
@@ -120,33 +120,91 @@ def main() -> None:
     else:
         st.success("Loaded dashboard data from local demo pipeline outputs.")
 
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background:
+                radial-gradient(circle at top left, rgba(255, 125, 0, 0.14), transparent 24%),
+                radial-gradient(circle at top right, rgba(34, 165, 114, 0.12), transparent 22%),
+                linear-gradient(180deg, #fff7ef 0%, #fffdf9 100%);
+        }
+        .hero {
+            background: linear-gradient(135deg, #ff8c42 0%, #f15b2a 50%, #0f6c5c 100%);
+            color: white;
+            border-radius: 22px;
+            padding: 1.6rem 1.8rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 18px 40px rgba(211, 96, 40, 0.18);
+        }
+        .glass {
+            background: rgba(255,255,255,0.84);
+            border: 1px solid rgba(241, 91, 42, 0.10);
+            border-radius: 18px;
+            padding: 1rem 1.1rem;
+            box-shadow: 0 10px 32px rgba(211, 96, 40, 0.08);
+        }
+        </style>
+        <div class="hero">
+            <h1 style="margin:0;">Revenue Signal Studio</h1>
+            <p style="margin:0.4rem 0 0 0; max-width: 48rem;">
+                A commercial analytics cockpit for revenue quality, channel attribution,
+                and cohort retention rather than a generic BI dashboard.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     metrics = payload["headline_metrics"]
-    st.title("E-Commerce Analytics KPI Dashboard")
-    st.caption("Governed business metrics delivered through BigQuery, dbt, and Streamlit patterns.")
 
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Net Revenue", f"${metrics['net_revenue']:.2f}")
-    col2.metric("Orders", metrics["orders"])
-    col3.metric("AOV", f"${metrics['average_order_value']:.2f}")
-    col4.metric("Retained Customers", metrics["retained_customers"])
+    selected_statuses = st.sidebar.multiselect(
+        "Order Status Filter",
+        sorted({str(order["order_status"]) for order in payload["orders"]}),
+        default=sorted({str(order["order_status"]) for order in payload["orders"]}),
+    )
+    filtered_orders = [
+        order for order in payload["orders"] if str(order["order_status"]) in selected_statuses
+    ]
+    filtered_revenue_by_category: dict[str, float] = {}
+    for order in filtered_orders:
+        category = str(order["category"])
+        filtered_revenue_by_category[category] = (
+            filtered_revenue_by_category.get(category, 0.0)
+            + float(order["realized_revenue"])
+        )
 
-    st.subheader("Revenue by Category")
-    st.bar_chart(payload["revenue_by_category"])
+    metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
+    metric_col1.metric("Realized Revenue", f"${metrics['net_revenue']:.2f}")
+    metric_col2.metric("Orders", len(filtered_orders))
+    metric_col3.metric("Refund Rate", f"{metrics['refund_rate'] * 100:.1f}%")
+    metric_col4.metric("Top Channel", metrics["top_channel"])
 
-    st.subheader("KPI Trend")
-    st.line_chart(payload["kpi_timeseries"], x="metric_date")
+    spotlight, controls = st.columns([1.35, 1])
+    with spotlight:
+        st.markdown('<div class="glass">', unsafe_allow_html=True)
+        st.subheader("Revenue by Category")
+        st.bar_chart(filtered_revenue_by_category)
+        st.subheader("KPI Trend")
+        st.line_chart(payload["kpi_timeseries"], x="metric_date")
+        st.markdown("</div>", unsafe_allow_html=True)
+    with controls:
+        st.markdown('<div class="glass">', unsafe_allow_html=True)
+        st.subheader("Attribution Table")
+        st.dataframe(payload["attribution_summary"], use_container_width=True, hide_index=True)
+        st.subheader("Cohort Summary")
+        st.dataframe(payload["cohort_summary"], use_container_width=True, hide_index=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    st.subheader("Last-Touch Attribution")
-    st.dataframe(payload["attribution_summary"], use_container_width=True)
-
-    st.subheader("Customer Retention Cohorts")
-    st.dataframe(payload["customer_retention"], use_container_width=True)
-
-    st.subheader("Order Detail")
-    st.dataframe(payload["orders"], use_container_width=True)
-
-    st.subheader("Quality Checks")
-    st.dataframe(payload["quality_results"], use_container_width=True)
+    detail_tab, retention_tab, quality_tab = st.tabs(
+        ["Order Ledger", "Retention Detail", "Quality Guardrails"]
+    )
+    with detail_tab:
+        st.dataframe(filtered_orders, use_container_width=True)
+    with retention_tab:
+        st.dataframe(payload["customer_retention"], use_container_width=True)
+    with quality_tab:
+        st.dataframe(payload["quality_results"], use_container_width=True)
 
 
 if __name__ == "__main__":

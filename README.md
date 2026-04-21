@@ -95,11 +95,10 @@ flowchart LR
    python -m ruff check . --no-cache
    ```
 
-4. Generate demo outputs and open the dashboard:
+4. Generate demo outputs and open the revenue signal studio:
 
    ```powershell
-   python -m ecommerce_analytics_platform.demo_pipeline
-   streamlit run streamlit_app.py
+   scripts/run_revenue_signal_studio.ps1
    ```
 
 5. Review GCP deployment inputs:
@@ -123,7 +122,7 @@ This writes generated outputs under `data/demo_output/`:
 - `mart/attribution_summary.json`, `mart/customer_retention.json`
 - `quality/quality_results.json`
 
-The Streamlit app automatically reads those files when present.
+The Streamlit studio automatically reads those files when present.
 
 ## Local Development Notes
 

@@ -26,6 +26,30 @@ def build_dashboard_payload(
     retained_customers = sum(
         1 for row in customer_retention if bool(row.get("retained_customer"))
     )
+    total_refunds = round(
+        sum(float(order.get("refund_amount", 0.0)) for order in fact_orders), 2
+    )
+    booked_revenue = sum(float(order.get("net_revenue", 0.0)) for order in fact_orders)
+    refund_rate = round(
+        total_refunds / max(booked_revenue, 1.0),
+        4,
+    )
+    top_channel = (
+        max(
+            attribution_summary,
+            key=lambda row: float(row.get("realized_revenue", 0.0)),
+        )["channel"]
+        if attribution_summary
+        else "n/a"
+    )
+    cohort_summary: dict[str, dict[str, int]] = {}
+    for row in customer_retention:
+        cohort_month = str(row.get("cohort_month", "unknown"))
+        current = cohort_summary.setdefault(
+            cohort_month, {"cohort_month": cohort_month, "customers": 0, "retained": 0}
+        )
+        current["customers"] += 1
+        current["retained"] += 1 if bool(row.get("retained_customer")) else 0
 
     return {
         "headline_metrics": {
@@ -34,11 +58,14 @@ def build_dashboard_payload(
             "average_order_value": float(latest_kpi.get("average_order_value", 0.0)),
             "conversion_rate": float(latest_kpi.get("conversion_rate", 0.0)),
             "retained_customers": retained_customers,
+            "refund_rate": refund_rate,
+            "top_channel": top_channel,
         },
         "revenue_by_category": revenue_by_category,
         "kpi_timeseries": kpi_metrics,
         "attribution_summary": attribution_summary,
         "customer_retention": customer_retention,
+        "cohort_summary": list(cohort_summary.values()),
         "orders": fact_orders,
         "quality_results": quality_results,
     }
