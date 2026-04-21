@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.env
+dbt/target/
+dbt/dbt_packages/
+data/demo_output/**
+!data/demo_output/.gitkeep

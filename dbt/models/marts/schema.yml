@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: dim_customer
+    columns:
+      - name: customer_id
+        tests: [not_null, unique]
+  - name: dim_product
+    columns:
+      - name: product_id
+        tests: [not_null, unique]
+  - name: fact_orders
+    columns:
+      - name: order_id
+        tests: [not_null, unique]
+  - name: kpi_daily_overview
+    columns:
+      - name: metric_date
+        tests: [not_null, unique]

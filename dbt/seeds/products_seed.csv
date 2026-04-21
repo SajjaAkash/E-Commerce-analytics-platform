@@ -1,0 +1,4 @@
+product_id,product_name,category,brand,list_price,inventory_status
+P100,AeroFit Running Shoes,Footwear,North Trail,128.00,in_stock
+P101,Performance Joggers,Apparel,Motion Lab,74.00,in_stock
+P102,Trail Hydration Pack,Accessories,North Trail,90.00,low_stock

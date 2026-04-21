@@ -1,0 +1,26 @@
+[
+  {
+    "customer_id": "C101",
+    "email": "Ava@example.com",
+    "signup_date": "2026-03-02",
+    "country": "US",
+    "orders_count": 3,
+    "lifetime_value": 412.85
+  },
+  {
+    "customer_id": "C102",
+    "email": "Noah@example.com",
+    "signup_date": "2026-04-01",
+    "country": "US",
+    "orders_count": 1,
+    "lifetime_value": 160.0
+  },
+  {
+    "customer_id": "C103",
+    "email": "Mia@example.com",
+    "signup_date": "2026-03-18",
+    "country": "CA",
+    "orders_count": 2,
+    "lifetime_value": 245.5
+  }
+]

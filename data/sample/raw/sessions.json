@@ -1,0 +1,38 @@
+[
+  {
+    "session_id": "S1001",
+    "customer_id": "C101",
+    "event_date": "2026-04-18",
+    "channel": "paid_search",
+    "device_type": "mobile",
+    "pageviews": 8,
+    "converted": true
+  },
+  {
+    "session_id": "S1002",
+    "customer_id": "C102",
+    "event_date": "2026-04-18",
+    "channel": "email",
+    "device_type": "desktop",
+    "pageviews": 5,
+    "converted": true
+  },
+  {
+    "session_id": "S1003",
+    "customer_id": "C103",
+    "event_date": "2026-04-18",
+    "channel": "organic_search",
+    "device_type": "mobile",
+    "pageviews": 7,
+    "converted": false
+  },
+  {
+    "session_id": "S1004",
+    "customer_id": "C103",
+    "event_date": "2026-04-19",
+    "channel": "organic_search",
+    "device_type": "tablet",
+    "pageviews": 6,
+    "converted": true
+  }
+]

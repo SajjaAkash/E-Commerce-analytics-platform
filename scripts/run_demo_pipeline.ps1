@@ -1,0 +1,1 @@
+python -m ecommerce_analytics_platform.demo_pipeline

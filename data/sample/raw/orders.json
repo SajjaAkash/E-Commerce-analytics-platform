@@ -1,0 +1,35 @@
+[
+  {
+    "order_id": "O1001",
+    "order_date": "2026-04-18",
+    "customer_id": "C101",
+    "product_id": "P100",
+    "session_id": "S1001",
+    "channel": "paid_search",
+    "units": 1,
+    "unit_price": 128.0,
+    "discount_amount": 12.0
+  },
+  {
+    "order_id": "O1002",
+    "order_date": "2026-04-18",
+    "customer_id": "C102",
+    "product_id": "P102",
+    "session_id": "S1002",
+    "channel": "email",
+    "units": 2,
+    "unit_price": 90.0,
+    "discount_amount": 20.0
+  },
+  {
+    "order_id": "O1003",
+    "order_date": "2026-04-19",
+    "customer_id": "C103",
+    "product_id": "P101",
+    "session_id": "S1004",
+    "channel": "organic_search",
+    "units": 1,
+    "unit_price": 74.0,
+    "discount_amount": 0.0
+  }
+]

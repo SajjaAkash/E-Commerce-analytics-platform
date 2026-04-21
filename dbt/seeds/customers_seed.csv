@@ -1,0 +1,4 @@
+customer_id,email,signup_date,country,orders_count,lifetime_value
+C101,Ava@example.com,2026-03-02,US,3,412.85
+C102,Noah@example.com,2026-04-01,US,1,160.00
+C103,Mia@example.com,2026-03-18,CA,2,245.50
